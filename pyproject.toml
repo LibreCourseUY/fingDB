@@ -5,6 +5,8 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "aiosqlite>=0.20.0",
+    "asyncpg>=0.30.0",
     "crudadmin>=0.4.3",
     "dbwarden>=0.1.4",
     "dotenv>=0.9.9",
