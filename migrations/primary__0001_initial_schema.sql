@@ -1,7 +1,4 @@
--- dbwarden v0.3.3.1
--- Migration: Initial schema
--- Database: postgresql
--- Direction: forward
+-- upgrade
 
 BEGIN;
 
@@ -74,4 +71,18 @@ CREATE INDEX idx_carrera_materias_materia ON carrera_materias(materia_id);
 CREATE INDEX idx_perfil_materias_perfil ON perfil_materias(perfil_id);
 CREATE INDEX idx_perfil_materias_materia ON perfil_materias(materia_id);
 
+COMMIT;
+
+-- rollback
+
+BEGIN;
+DROP TABLE IF EXISTS perfil_materias;
+DROP TABLE IF EXISTS carrera_materias;
+DROP TABLE IF EXISTS materia_previas;
+DROP TABLE IF EXISTS materias;
+DROP TABLE IF EXISTS perfiles;
+DROP TABLE IF EXISTS carreras;
+DROP TABLE IF EXISTS institutos;
+DROP TYPE IF EXISTS periodo_enum;
+DROP TYPE IF EXISTS tipo_previa_enum;
 COMMIT;
