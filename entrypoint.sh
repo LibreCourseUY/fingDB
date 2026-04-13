@@ -24,11 +24,18 @@ with open('warden.toml', 'w') as f:
     f.write('[database.primary]\n')
     f.write('database_type = \"' + db_type + '\"\n')
     f.write('sqlalchemy_url = \"' + db_url + '\"\n')
-    f.write('model_paths = [\"app/models/\"]\n')
-    f.write('migrations_dir = \"migrations\"\n')
+    f.write('migrations_dir = \"migrations/primary\"\n')
 
 print(f'warden.toml generated: type={db_type}')
 "
+
+# Create migrations directory
+mkdir -p migrations/primary
+
+# Move existing migrations to migrations/primary if needed
+if [ -d "migrations" ] && [ ! -d "migrations/primary" ]; then
+    mv migrations/*.sql migrations/primary/ 2>/dev/null || true
+fi
 
 # Run migrations
 uv run dbwarden migrate --verbose
