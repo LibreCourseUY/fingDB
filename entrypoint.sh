@@ -1,25 +1,31 @@
 #!/bin/sh
 set -e
 
-# Generate warden.toml at runtime (TOML doesn't support env vars)
-if [ "$ENVIRONMENT" = "PROD" ]; then
-    DB_TYPE="postgresql"
-    DB_URL="$DATABASE_URL"
-else
-    DB_TYPE="sqlite"
-    DB_URL="${DATABASE_URL:-sqlite:///./data/fingdb.db}"
-fi
+# Generate warden.toml with Python to avoid shell escaping issues
+uv run python -c "
+import os, re
 
-cat > warden.toml <<EOF
-default = "main"
+env = os.getenv('ENVIRONMENT', 'DEV')
+if env == 'PROD':
+    db_type = 'postgresql'
+    db_url = os.environ['DATABASE_URL']
+    # Strip any driver suffix so dbwarden gets plain postgresql://
+    db_url = re.sub(r'^postgresql(\+\w+)?://', 'postgresql://', db_url)
+else:
+    db_type = 'sqlite'
+    db_url = os.getenv('DATABASE_URL', 'sqlite:///./data/fingdb.db')
 
-[database]
-[database.main]
-database_type = "${DB_TYPE}"
-sqlalchemy_url = "${DB_URL}"
-model_paths = ["app/models/"]
-migrations_dir = "migrations"
-EOF
+with open('warden.toml', 'w') as f:
+    f.write('default = \"main\"\n\n')
+    f.write('[database]\n')
+    f.write('[database.main]\n')
+    f.write('database_type = \"' + db_type + '\"\n')
+    f.write('sqlalchemy_url = \"' + db_url + '\"\n')
+    f.write('model_paths = [\"app/models/\"]\n')
+    f.write('migrations_dir = \"migrations\"\n')
+
+print(f'warden.toml generated: type={db_type}')
+"
 
 # Run migrations
 uv run dbwarden migrate --verbose
