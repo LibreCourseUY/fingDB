@@ -22,8 +22,10 @@ CREATE TABLE IF NOT EXISTS institutos (
 CREATE TABLE IF NOT EXISTS materias (
     id INTEGER NOT NULL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
+    codigo VARCHAR(50),
     periodo VARCHAR(11) NOT NULL,
     creditos INTEGER NOT NULL DEFAULT 0,
+    min_creditos INTEGER,
     active BOOLEAN NOT NULL DEFAULT TRUE,
     created_at DATETIME NOT NULL,
     updated_at DATETIME,
@@ -31,12 +33,9 @@ CREATE TABLE IF NOT EXISTS materias (
 )
 
 CREATE TABLE IF NOT EXISTS materia_previas (
-    materia_id INTEGER NOT NULL,
-    previa_id INTEGER NOT NULL,
-    tipo VARCHAR(9) NOT NULL,
-    PRIMARY KEY (materia_id, previa_id, tipo),
-    FOREIGN KEY(materia_id) REFERENCES materias(id) ON DELETE CASCADE,
-    FOREIGN KEY(previa_id) REFERENCES materias(id) ON DELETE CASCADE
+    materia_id INTEGER NOT NULL PRIMARY KEY REFERENCES materias(id),
+    previa_id INTEGER NOT NULL PRIMARY KEY REFERENCES materias(id),
+    tipo VARCHAR(9) NOT NULL PRIMARY KEY
 )
 
 CREATE TABLE IF NOT EXISTS perfiles (

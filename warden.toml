@@ -1,8 +1,0 @@
-# DBWarden Configuration
-# See documentation: https://emiliano-gandini-outeda.me/DBWarden/
-
-default = "primary"
-
-[database.primary]
-database_type = "sqlite"
-sqlalchemy_url = "sqlite:///./fingdb.db"
