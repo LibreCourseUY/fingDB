@@ -948,6 +948,10 @@ createApp({
             materia_codigo: materia.codigo || null,
             open_modal: openModal
           });
+          trackFingdbMetrics('fingdb_click', {
+            materia_id: materia.id,
+            materia_name: materia.name
+          });
         }
         
         if (isMobile.value) {
@@ -1271,6 +1275,28 @@ createApp({
       }).catch(() => {});
     }
     
+    function trackFingdbMetrics(eventType, metadata = {}) {
+      fetch('/api/metrics/event', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ event_type: eventType, metadata })
+      }).catch(() => {});
+    }
+    
+    function trackFingdbView() {
+      fetch('/api/metrics/views', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          path: window.location.pathname,
+          referrer: document.referrer,
+          user_agent: navigator.userAgent,
+          viewport: `${window.innerWidth}x${window.innerHeight}`,
+          document_title: document.title
+        })
+      }).catch(() => {});
+    }
+    
     // Initialize component on mount
     onMounted(() => {
       checkLoginStatus();
@@ -1278,6 +1304,7 @@ createApp({
         loadData().then(function() {
           renderGraph();
           sendMetrics();
+          trackFingdbView();
         });
       });
       checkMobile();

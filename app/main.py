@@ -15,9 +15,12 @@ Key Concepts:
 from fastapi import FastAPI, Request
 from fastapi.responses import FileResponse, HTMLResponse, Response
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
+from typing import Optional
 from contextlib import asynccontextmanager
 import os
 import mimetypes
+import httpx
 
 from app.crud.materia import (
     materia_router,
@@ -131,6 +134,68 @@ async def auth_verify(request: Request):
     if username:
         return {"valid": True, "username": username}
     return {"valid": False}
+
+
+METRICS_EVENTS_URL = os.getenv(
+    "METRICS_EVENTS_URL", "https://api.eclipselabs.com.uy/metrics/event"
+)
+METRICS_VIEWS_URL = os.getenv(
+    "METRICS_VIEWS_URL", "https://api.eclipselabs.com.uy/metrics/views"
+)
+METRICS_API_KEY = os.getenv("METRICS_API_KEY", "")
+
+
+class MetricsEvent(BaseModel):
+    event_type: str
+    metadata: Optional[dict] = None
+
+
+class ViewEvent(BaseModel):
+    path: str
+    referrer: Optional[str] = None
+    user_agent: Optional[str] = None
+    viewport: Optional[str] = None
+    document_title: Optional[str] = None
+
+
+@app.post("/api/metrics/event")
+async def track_event(event: MetricsEvent):
+    """Track click events by forwarding to the metrics API."""
+    if not METRICS_API_KEY:
+        return {"status": "skipped", "reason": "Metrics not configured"}
+
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            response = await client.post(
+                METRICS_EVENTS_URL,
+                json={"event_type": event.event_type, "metadata": event.metadata or {}},
+                headers={"X-API-Key": METRICS_API_KEY},
+            )
+            if response.status_code == 200:
+                return {"status": "ok"}
+            return {"status": "error", "detail": response.text}
+    except Exception as e:
+        return {"status": "error", "detail": str(e)}
+
+
+@app.post("/api/metrics/views")
+async def track_view(view: ViewEvent):
+    """Track page views by forwarding to the metrics API."""
+    if not METRICS_API_KEY:
+        return {"status": "skipped", "reason": "Metrics not configured"}
+
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            response = await client.post(
+                METRICS_VIEWS_URL,
+                json=view.model_dump(exclude_none=True),
+                headers={"X-API-Key": METRICS_API_KEY},
+            )
+            if response.status_code == 200:
+                return {"status": "ok"}
+            return {"status": "error", "detail": response.text}
+    except Exception as e:
+        return {"status": "error", "detail": str(e)}
 
 
 # ============================================================================
