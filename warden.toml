@@ -1,14 +1,8 @@
 # DBWarden Configuration
 # See documentation: https://emiliano-gandini-outeda.me/DBWarden/
 
-# Database connection URL (required)
-sqlalchemy_url = "sqlite+aiosqlite:///./fingdb.db"
+default = "primary"
 
-# Enable async mode (true/false)
-async = true
-
-# PostgreSQL schema (optional)
-# postgres_schema = "public"
-
-# Paths to SQLAlchemy models for auto-migration (optional)
-# model_paths = ["app/models/"]
+[database.primary]
+database_type = "sqlite"
+sqlalchemy_url = "sqlite:///./fingdb.db"
