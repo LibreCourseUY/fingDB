@@ -37,8 +37,8 @@ if [ -d "migrations" ] && [ ! -d "migrations/primary" ]; then
     mv migrations/*.sql migrations/primary/ 2>/dev/null || true
 fi
 
-# Run migrations (baseline if tables already exist)
-uv run dbwarden migrate --verbose --baseline || true
+# Run migrations (continue on error - tables may already exist)
+uv run dbwarden migrate --verbose || echo "Migrations skipped or failed"
 
 # Start application
 exec uv run uvicorn app.main:app --host 0.0.0.0 --port 8080
