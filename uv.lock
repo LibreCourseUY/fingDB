@@ -254,7 +254,7 @@ wheels = [
 
 [[package]]
 name = "dbwarden"
-version = "0.3.3.1"
+version = "0.3.4"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "clickhouse-connect" },
@@ -264,9 +264,9 @@ dependencies = [
     { name = "sqlalchemy" },
     { name = "typer" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/c5/fd/86c5d0c342145ee3f14ed04250b6fef4f8c90926b5832870361600bbfc44/dbwarden-0.3.3.1.tar.gz", hash = "sha256:9bb6ed4ffc03ca6ce775d7c9e23de05e6bdd9178ff1613b1afc556fd1ad59723", size = 453099, upload-time = "2026-04-12T21:43:21.039Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/b2/60/deed2185b1625b01d9b1ddadc44e6fe69a37b9270ad263e130f1b0c62758/dbwarden-0.3.4.tar.gz", hash = "sha256:2e6dfba28317c82c15adbadf87bb02074f26832899feecb43cf3e5c59b77d695", size = 465762, upload-time = "2026-04-14T02:52:08.84Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/4e/51/2206a74fb977a713619ba238227b7b5065864dacd3cb04da12766024b281/dbwarden-0.3.3.1-py3-none-any.whl", hash = "sha256:8e503def2e13069bc715a11075382b09be922c279f657f37468a735bdfbca4e3", size = 45892, upload-time = "2026-04-12T21:43:19.035Z" },
+    { url = "https://files.pythonhosted.org/packages/33/e5/721d961ba4fcdd931f4232add97c8c646f8d252c6c0de33d5aaf218e6fbe/dbwarden-0.3.4-py3-none-any.whl", hash = "sha256:57a935fa6b066b072606f7b5043b19d737f50f32234015d74d340c5cd374df22", size = 46023, upload-time = "2026-04-14T02:52:06.695Z" },
 ]
 
 [[package]]
@@ -369,7 +369,7 @@ requires-dist = [
     { name = "aiosqlite", specifier = ">=0.20.0" },
     { name = "asyncpg", specifier = ">=0.30.0" },
     { name = "crudadmin", specifier = ">=0.4.3" },
-    { name = "dbwarden", specifier = ">=0.3.3" },
+    { name = "dbwarden", specifier = ">=0.3.4" },
     { name = "dotenv", specifier = ">=0.9.9" },
     { name = "fastapi", specifier = ">=0.129.0" },
     { name = "fastcrud", specifier = ">=0.21.0" },
