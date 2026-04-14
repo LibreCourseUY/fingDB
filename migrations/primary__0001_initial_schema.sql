@@ -1,21 +1,21 @@
 -- upgrade
 
+CREATE TABLE IF NOT EXISTS institutos (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP NOT NULL
+)
+
 CREATE TABLE IF NOT EXISTS carreras (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     created_at TIMESTAMP NOT NULL
 )
 
-CREATE TABLE IF NOT EXISTS carrera_materias (
-    id SERIAL PRIMARY KEY,
-    carrera_id INTEGER NOT NULL REFERENCES carreras(id),
-    materia_id INTEGER NOT NULL REFERENCES materias(id),
-    tipo VARCHAR(20) NOT NULL
-)
-
-CREATE TABLE IF NOT EXISTS institutos (
+CREATE TABLE IF NOT EXISTS perfiles (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
+    carrera_id INTEGER NOT NULL REFERENCES carreras(id),
     created_at TIMESTAMP NOT NULL
 )
 
@@ -33,16 +33,17 @@ CREATE TABLE IF NOT EXISTS materias (
 )
 
 CREATE TABLE IF NOT EXISTS materia_previas (
-    materia_id SERIAL PRIMARY KEY REFERENCES materias(id),
-    previa_id SERIAL PRIMARY KEY REFERENCES materias(id),
-    tipo VARCHAR(9) NOT NULL PRIMARY KEY
+    materia_id INTEGER NOT NULL REFERENCES materias(id),
+    previa_id INTEGER NOT NULL REFERENCES materias(id),
+    tipo VARCHAR(9) NOT NULL,
+    PRIMARY KEY (materia_id, previa_id, tipo)
 )
 
-CREATE TABLE IF NOT EXISTS perfiles (
+CREATE TABLE IF NOT EXISTS carrera_materias (
     id SERIAL PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
     carrera_id INTEGER NOT NULL REFERENCES carreras(id),
-    created_at TIMESTAMP NOT NULL
+    materia_id INTEGER NOT NULL REFERENCES materias(id),
+    tipo VARCHAR(20) NOT NULL
 )
 
 CREATE TABLE IF NOT EXISTS perfil_materias (
@@ -56,14 +57,14 @@ CREATE TABLE IF NOT EXISTS perfil_materias (
 
 DROP TABLE perfil_materias
 
-DROP TABLE perfiles
+DROP TABLE carrera_materias
 
 DROP TABLE materia_previas
 
 DROP TABLE materias
 
-DROP TABLE institutos
-
-DROP TABLE carrera_materias
+DROP TABLE perfiles
 
 DROP TABLE carreras
+
+DROP TABLE institutos
