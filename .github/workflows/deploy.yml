@@ -40,6 +40,6 @@ jobs:
           username: deploy
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            curl -s \
+            curl -s -X POST \
               -H "Authorization: Bearer ${{ secrets.WATCHTOWER_TOKEN }}" \
               http://localhost:8080/v1/update
