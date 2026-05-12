@@ -1,0 +1,8 @@
+name: PR Checks
+
+on:
+  pull_request:
+
+jobs:
+  central:
+    uses: librecourseuy/.github/.github/workflows/central-checks.yml@main
